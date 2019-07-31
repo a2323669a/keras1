@@ -55,6 +55,7 @@ model.add(Dropout(0.5))
 model.add(Dense(num_classes))
 model.add(Activation('softmax'))
 
+model.summary()
 # initiate RMSprop optimizer
 opt = keras.optimizers.rmsprop(lr=0.0001, decay=1e-6)
 
@@ -78,6 +79,8 @@ if not data_augmentation:
 else:
     print('Using real-time data augmentation.')
     # This will do preprocessing and realtime data augmentation:
+    #feature:减去的均值和标准化的方差使用的是fit()方法的数据集的统计值
+    #sample:减去的均值和标准化的方差是数据集自己的统计值
     datagen = ImageDataGenerator(
         featurewise_center=False,  # set input mean to 0 over the dataset
         samplewise_center=False,  # set each sample mean to 0
@@ -116,6 +119,7 @@ else:
                                      batch_size=batch_size),
                         epochs=epochs,
                         validation_data=(x_test, y_test),
+                        steps_per_epoch=len(x_train)/batch_size,
                         workers=4)
 
 # Save model and weights

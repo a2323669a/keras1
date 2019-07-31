@@ -12,14 +12,31 @@ class SaveCall(keras.callbacks.Callback):
     batch_mode = 'batch_mode'
     train_mode = 'train_mode'
 
-    def __init__(self,filepath,period = 1,mode = epoch_mode,max_one = True):
+    def __init__(self,filepath,model,period = 1,mode = epoch_mode,max_one = True):
+        '''
+        :param filepath: file saved path
+        :param period: save period
+        :param mode: mode to save
+                    epoch_mode: save per period epoch
+                    batch_mode,save per period batch,when batch start,restart count
+                    train_mode,save per period batch,only initial when train start
+        :param max_one: only have one file
+        '''
         super().__init__()
         self.filepath = filepath
         self.mode = mode
         self.period = period
         self.max_one = max_one
 
+        self.load(model)
+
     def load(self,model):
+        '''
+        load model weights
+
+        :param model: Sequentail
+        :return: initial epoch
+        '''
         ckpt_dir = os.path.dirname(self.filepath)
         if not os.path.exists(ckpt_dir):
             os.mkdir(ckpt_dir)
